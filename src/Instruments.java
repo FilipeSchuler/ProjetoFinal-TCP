@@ -10,7 +10,8 @@ public enum Instruments {
     TUBULAR_BELLS(15),
     PAN_FLUTE(76),
     CHURCH_ORGAN(20),
-    INVALID_INSTRUMENT(0);
+    DEFAULT_INSTRUMENT(0),
+    INVALID_INSTRUMENT(-10);
 
     private final int midiValue;
 
@@ -30,7 +31,31 @@ public enum Instruments {
 
         midiValue = digitValue + currentInstrument;
 
-        return midiValue;
+        if (isValidInstrument(midiValue))
+            return midiValue;
+        else
+            return DEFAULT_INSTRUMENT.getMidiValue();
+    }
+
+    private static boolean isValidInstrument(int midiValue) {
+        return midiValue <= Constant.MAX_MIDI_INSTRUMENT;
+    }
+
+    public static boolean isInstrument(int instrument){
+
+        return instrument > DEFAULT_INSTRUMENT.getMidiValue();
+    }
+
+    public static boolean isInstrument(char noteChar){
+        boolean isInstrument;
+
+        switch (Character.toUpperCase(noteChar)){
+            case '!', 'I', 'O', 'U', '\n', ';', ',',
+                 '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> isInstrument = true;
+
+            default -> isInstrument = false;
+        }
+        return isInstrument;
     }
 
 

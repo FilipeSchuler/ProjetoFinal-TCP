@@ -8,47 +8,47 @@
 
 
 public class TextMapping {
-    public static String inputText = Constant.MSG2;
-        //
+
+    public static String inputText = Constant.MSG1;
+
     public static int[] handleInputText(){
         char[] musicToDecode = inputText.toCharArray();
         int[] decodedMusic = new int[musicToDecode.length];
+        char charToDecode;
 
-        //Sequence sequence = new Sequence(Sequence.PPQ, Constant.NUM_PULSES_PER_QUARTER);
-        //musica codificada =    [A,M,e,s,a,..., !          /* os dois vetores devem ter
+        //musica codificada =    [A, ,M,e,n,s,..., !          /* os dois vetores devem ter
         //musica descodificada = [69(La), , , , , ..., 114  */ o mesmo tamanho
-        char charTodecod;
 
         for(int i = 0; i < musicToDecode.length; i++){
-            charTodecod = musicToDecode[i];
-            if(isNote(charTodecod)){
-                decodedMusic[i] = handleNotes(charTodecod);
+            charToDecode = musicToDecode[i];
+            if(MusicalNote.isNote(charToDecode)){
+                decodedMusic[i] = convertCharIntoNote(charToDecode);
             }
-            else if (isInstrument(charTodecod)){
-                Instruments.currentInstrument = handleInstruments(charTodecod);
+            else if (Instruments.isInstrument(charToDecode)){
+                Instruments.currentInstrument = convertCharIntoInstrument(charToDecode);
                 decodedMusic[i] = Instruments.currentInstrument;
             }
             else{
-                decodedMusic[i] = handleInstructions(charTodecod);
+                decodedMusic[i] = convertCharIntoInstruction(charToDecode);
             }
         }
 
         return decodedMusic;
     }
 
-    public static int handleInstructions(char character){
-        int instructionMidiValue;
+    public static int convertCharIntoInstruction(char character){
+        int instructionCode;
 
         switch(character){
-            case ' ' -> instructionMidiValue = Constant.COMMAND_DOUBLE_VOLUME;
-            case '?', '.' -> instructionMidiValue = Constant.COMMAND_CHANGE_OCTAVE;
-            default -> instructionMidiValue = 0; //SILENCIO OU PAUSA!!
+            case ' ' -> instructionCode = Constant.CODE_TO_CHANGE_VOLUME;
+            case '?', '.' -> instructionCode = Constant.CODE_TO_CHANGE_OCTAVE;
+            default -> instructionCode = Constant.CODE_DO_NOTHING; //SILENCIO OU PAUSA!!
         }
 
-        return instructionMidiValue;
+        return instructionCode;
     }
 
-    public static int handleInstruments(char character){
+    public static int convertCharIntoInstrument(char character){
         int instrumentMidiValue;
 
         switch (Character.toUpperCase(character)) {
@@ -65,7 +65,7 @@ public class TextMapping {
     }
 
 
-    public static int handleNotes(char character){
+    public static int convertCharIntoNote(char character){
         int noteMidiValue;
 
         switch (character) {
@@ -81,27 +81,9 @@ public class TextMapping {
         return noteMidiValue;
     }
 
-    public static boolean isNote(char noteChar){
-        boolean isNote;
 
-        switch (noteChar){
-            case 'A', 'B', 'C', 'D', 'E', 'F', 'G' -> isNote = true;
-            default -> isNote = false;
-        }
-        return isNote;
-    }
 
-    public static boolean isInstrument(char noteChar){
-        boolean isInstrument;
 
-        switch (Character.toUpperCase(noteChar)){
-            case '!', 'I', 'O', 'U', '\n', ';', ',',
-                 '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> isInstrument = true;
-
-            default -> isInstrument = false;
-        }
-        return isInstrument;
-    }
 
 
 

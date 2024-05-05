@@ -8,28 +8,124 @@
     Track = eventos musicais organizados em uma linha do tempo -> "instrumento"
     -'uma Sequence é composta por várias tracks'
     Sequence = contém todos eventos musicais (notas, instrumentos, bpm, etc) -> "partitura"
-
 */
 
 import javax.sound.midi.*;
 
 public class MusicGenerator {
 
-    private static Sequencer sequencer;
-    private static Sequence sequence;
-    private static Track track;
+    public Sequence sequence;
+    public Track track;
     private int tick = 0;
 
-    public static int[] decodedMusic = null;
+    private int note;
+    private int lastNote;
+    private int instrument = Constant.INITIAL_INSTRUMENT;
+    public int bpm = Constant.INITIAL_BPM;
+    private int octave = Constant.INITIAL_OCTAVE;
+    private int volume = Constant.INITIAL_VOLUME;
 
-    public static void musicGenerator() throws InvalidMidiDataException{
+    public MusicGenerator() throws InvalidMidiDataException{
         sequence = new Sequence(Sequence.PPQ, Constant.NUM_PULSES_PER_QUARTER); //Sequence(tipo de tempo, qntidade)
         track = sequence.createTrack();
-
-        generateMusic();
     }
 
-    //Tratamento dos TICKS
+    public Sequence generateMusic() throws InvalidMidiDataException {
+        int[] decodedMusic;
+
+        decodedMusic = TextMapping.handleInputText();
+
+        return musicTrack(decodedMusic);
+    }
+
+    private Sequence musicTrack(int[] music) throws InvalidMidiDataException {
+        startTick();
+        for (int musicalEvent : music) {
+
+            if (MusicalNote.isNote(musicalEvent))
+                handleNoteCase(musicalEvent);
+
+            else if (musicalEvent == Constant.CODE_TO_CHANGE_OCTAVE)
+                setOctave();
+
+            else if (musicalEvent == Constant.CODE_TO_CHANGE_VOLUME)
+                setVolume();
+
+            else if (Instruments.isInstrument(musicalEvent))
+                handleInstrumentCase(musicalEvent);
+
+            else
+                handleLastNoteCase(musicalEvent);
+        }
+        return this.sequence;
+    }
+
+
+    private void handleNoteCase(int musicalEvent) throws InvalidMidiDataException {
+        setNote(musicalEvent);
+        addNoteOnTrack();
+        updateTick();
+    }
+
+    private void handleInstrumentCase(int musicalEvent) throws InvalidMidiDataException {
+        setInstrument(musicalEvent);
+        addInstrumentOnTrack();
+    }
+
+    private void handleLastNoteCase(int musicalEvent) throws InvalidMidiDataException {
+        updateLastNote();
+        setNote(musicalEvent);
+        if(getLastNote() != Constant.CODE_DO_NOTHING)
+        {
+            addLastNoteOnTrack();
+        }
+        updateTick();
+    }
+
+    private void addNoteOnTrack() throws InvalidMidiDataException {
+        MidiEvent noteOn = eventForNote(Constant.NOTE_ON, getNote()+getOctave(), getTick());
+        MidiEvent noteOff = eventForNote(Constant.NOTE_OFF, getNote()+getOctave(),
+                    getTick()+Constant.FADE);
+
+        this.track.add(noteOn);
+        this.track.add(noteOff);
+    }
+
+    private void addLastNoteOnTrack() throws InvalidMidiDataException {
+        MidiEvent noteOn = eventForNote(Constant.NOTE_ON, getLastNote()+getOctave(), getTick());
+        MidiEvent noteOff = eventForNote(Constant.NOTE_OFF, getLastNote()+getOctave(),
+                        getTick()+Constant.NUM_PULSES_PER_QUARTER);
+
+        this.track.add(noteOn);
+        this.track.add(noteOff);
+    }
+
+    private MidiEvent eventForNote(int command, int noteMidiValue, int tick) throws InvalidMidiDataException {
+        MidiEvent event;
+        ShortMessage message = new ShortMessage();
+
+        message.setMessage(command, Constant.DEFAULT_CHANNEL, noteMidiValue, getVolume());
+        event = new MidiEvent(message,tick);
+
+        return event;
+    }
+
+    private void addInstrumentOnTrack() throws InvalidMidiDataException {
+        MidiEvent changeInstrument = eventForInstrument(getInstrument(), getTick());
+
+        this.track.add(changeInstrument);
+    }
+
+    private MidiEvent eventForInstrument(int instrumentMidiValue, int tick) throws InvalidMidiDataException {
+        MidiEvent event;
+        ShortMessage message = new ShortMessage();
+
+        message.setMessage(Constant.CHANGE_INSTRUMENT, Constant.DEFAULT_CHANNEL, instrumentMidiValue,0);
+        event = new MidiEvent(message,tick);
+
+        return event;
+    }
+
     private void startTick(){
         setTick(Constant.INITIAL_TICK);
     }
@@ -43,36 +139,42 @@ public class MusicGenerator {
         setTick(getTick() + Constant.NUM_PULSES_PER_QUARTER);
     }
 
-
-    public static void generateMusic() {
-        /*  Para gerar a música é necessário
-            1- descodificar o texto de entrada - OK
-            2- efetuar tratamentos para cada item do vetor descodificado
-                2.1- Sempre atualizar o tick a cada tratamento
-                -alterar volume se necessário
-                -Trocar instrumentos e adicionar na track
-                -alterar oitava se necessário
-                -Adicionar nota na track
-            3- os parametros para tocar a música devem estar corretos
-
-        */
-
-        decodedMusic = TextMapping.handleInputText();
+    private int getInstrument(){
+        return this.instrument;
+    }
+    private void setInstrument(int midiValue){
+        this.instrument = midiValue;
     }
 
-
-    private void addNoteOnTrack(int noteMidiValue) throws InvalidMidiDataException {
-        track.add(newEventForNote(Constant.COMMAND_NOTEON, noteMidiValue, getTick()));
-        track.add(newEventForNote(Constant.COMMAND_NOTEOFF, noteMidiValue, getTick()+Constant.NUM_PULSES_PER_QUARTER));
+    private int getNote(){
+        return this.note;
+    }
+    private void setNote(int midiValue){
+        this.note = midiValue;
+    }
+    private int getLastNote(){
+        return this.lastNote;
+    }
+    private void updateLastNote(){
+        this.lastNote = getNote();
     }
 
-    private MidiEvent newEventForNote(int command, int noteMidiValue, int tick) throws InvalidMidiDataException {
-        MidiEvent event;
-        ShortMessage message = new ShortMessage();
-        message.setMessage(command, 0, noteMidiValue, tick);
-        event = new MidiEvent(message,tick);
+    private int getOctave(){
+        return this.octave;
+    }
+    private void setOctave(){
+        this.octave = NoteUtils.changeOctave(getOctave());
+    }
 
-        return event;
+    private int getVolume(){
+        return this.volume;
+    }
+    private void setVolume(){
+        this.volume = NoteUtils.changeVolume(getVolume());
+    }
+
+    public int getBPM(){
+        return this.bpm;
     }
 
 }

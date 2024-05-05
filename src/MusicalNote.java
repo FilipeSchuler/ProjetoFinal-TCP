@@ -24,4 +24,29 @@ public enum MusicalNote {
         return this.midiValue;
     }
 
+    public static MusicalNote getNoteFromMidiValue(int midiValue) {
+        for (MusicalNote note : MusicalNote.values()) {
+            if (note.getMidiValue() == midiValue) {
+                return note;
+            }
+        }
+        return MusicalNote.INVALID_NOTE;
+    }
+
+    public static boolean isNote(int command){
+        MusicalNote note = getNoteFromMidiValue(command);
+
+        return note != MusicalNote.INVALID_NOTE;
+    }
+
+    public static boolean isNote(char noteChar){
+        boolean isNote;
+
+        switch (noteChar){
+            case 'A', 'B', 'C', 'D', 'E', 'F', 'G' -> isNote = true;
+            default -> isNote = false;
+        }
+        return isNote;
+    }
+
 }
