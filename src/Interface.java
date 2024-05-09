@@ -45,13 +45,11 @@ public class Interface {
     public static final int POSITION_Y_VOLUMEBAR = 480;
     public static final int VOLUMEBAR_WIDTH = 600;
     public static final int VOLUMEBAR_HEIGHT = 50;
-    public static boolean IsPlaying = false;
 
-    // private JSlider volumeBar;
+    public static boolean IsPlaying = false;
+//    private JSlider volumeBar;
     public static String musica;
     public static int bpm;
-
-
     public JFrame Player;
 
 
@@ -127,15 +125,15 @@ public class Interface {
         Player.setLocationRelativeTo(null);
         Player.setResizable(false);
 
-//AÇOES
+//AÇOES DOS BOTOES
         playButton.addActionListener(e -> {
             musica = musicatexto.getText();
-            bpm = GetBpmFromText(bpmText);
+            bpm = PlayerMusic.GetBpmFromText(bpmText);
             if (musica.isEmpty()) {
                 JOptionPane.showMessageDialog(null, "Digite uma musica!");
             }else if (!IsPlaying) {
                 try {
-                    PlayMusic();
+                    PlayerMusic.PlayMusic();
                 } catch (InvalidMidiDataException | MidiUnavailableException ex) {
                     throw new RuntimeException(ex);
                 }
@@ -143,49 +141,23 @@ public class Interface {
         });
 
         pauseButton.addActionListener(e -> {
-            if(IsPlaying){
-                try {
-                    PauseMusic();
-                } catch (MidiUnavailableException ex) {
-                    throw new RuntimeException(ex);
-                }
+            try {
+                PlayerMusic.PauseMusic();
+            } catch (MidiUnavailableException ex) {
+                throw new RuntimeException(ex);
             }
         });
+
         stopButton.addActionListener(e -> {
-            // Lógica para parar a reprodução...
-        });
-    }
-    public static void PlayMusic() throws InvalidMidiDataException, MidiUnavailableException {
-
-        MusicGenerator musicGenerator = new MusicGenerator();
-        Sequencer sequencer;
-        sequencer = MidiSystem.getSequencer();
-        sequencer.open();
-        sequencer.setSequence(musicGenerator.generateMusic());
-        sequencer.setTempoInBPM(musicGenerator.getBPM());
-        sequencer.start();
-        IsPlaying = true;
-
-        sequencer.addMetaEventListener(meta -> {
-            if (meta.getType() == Constant.END_OF_SEQUENCE) { // Verifica se a mensagem meta é o fim da sequência
-                sequencer.close();
-                IsPlaying = false;
+            try{
+                PlayerMusic.StopMusic();
+            }catch (MidiUnavailableException ex) {
+                throw new RuntimeException(ex);
             }
         });
     }
-    public static void PauseMusic() throws MidiUnavailableException {
-        Sequencer sequencer = MidiSystem.getSequencer();
-        sequencer.stop();
-    }
+//AÇÃO DA BARRA DE VOLUME
 
-    public static int GetBpmFromText(JTextField bpmText){
-        try {
-            bpm = Integer.parseInt(bpmText.getText());
-        }catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(null, "Digite um valor inteiro válido de BPM!");
-        }
-        return bpm;
-    }
 
 
 

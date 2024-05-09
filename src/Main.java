@@ -10,6 +10,11 @@ public class Main {
 
     public static void main(String[] args) throws InvalidMidiDataException, MidiUnavailableException {
         //Rodar a interface
+
+        Interface PlayerGUI = new Interface();
+        PlayerGUI.Player.setVisible(true);
+
+/*
         MusicGenerator musicGenerator = new MusicGenerator();
 
         sequencer = MidiSystem.getSequencer();
@@ -24,6 +29,8 @@ public class Main {
                 sequencer.close();
             }
         });
+*/
+
     }
 }
 

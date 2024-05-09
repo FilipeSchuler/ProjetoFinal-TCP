@@ -21,7 +21,7 @@ public class MusicGenerator {
     private int note;
     private int lastNote;
     private int instrument = Instruments.DEFAULT_INSTRUMENT.getMidiValue();
-    public int bpm = Constant.INITIAL_BPM;
+    public int bpm = Interface.bpm;
     private int octave = Constant.INITIAL_OCTAVE;
     private int volume = Constant.INITIAL_VOLUME;
 
