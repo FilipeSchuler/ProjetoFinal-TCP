@@ -6,7 +6,6 @@
 
 */
 
-
 public class TextMapping {
 
     public static String inputText = Constant.MSG1;
@@ -42,6 +41,10 @@ public class TextMapping {
         switch(character){
             case ' ' -> instructionCode = Constant.CODE_TO_CHANGE_VOLUME;
             case '?', '.' -> instructionCode = Constant.CODE_TO_CHANGE_OCTAVE;
+
+            //NÃO SÃO ESPECIFICAÇÃO DO TRABALHO
+            case '>' -> instructionCode = Constant.CODE_INCREASED_DURATION;
+
             default -> instructionCode = Constant.CODE_DO_NOTHING; //SILENCIO OU PAUSA!!
         }
 
@@ -80,13 +83,4 @@ public class TextMapping {
         }
         return noteMidiValue;
     }
-
-
-
-
-
-
-
-
-
 }

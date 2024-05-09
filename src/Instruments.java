@@ -15,7 +15,7 @@ public enum Instruments {
 
     private final int midiValue;
 
-    public static int currentInstrument;
+    public static int currentInstrument = DEFAULT_INSTRUMENT.getMidiValue();
 
     Instruments(int midiValue) {
         this.midiValue = midiValue;
@@ -57,8 +57,6 @@ public enum Instruments {
         }
         return isInstrument;
     }
-
-
 }
 
 

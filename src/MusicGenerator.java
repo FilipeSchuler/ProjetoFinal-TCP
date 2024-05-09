@@ -20,7 +20,7 @@ public class MusicGenerator {
 
     private int note;
     private int lastNote;
-    private int instrument = Constant.INITIAL_INSTRUMENT;
+    private int instrument = Instruments.DEFAULT_INSTRUMENT.getMidiValue();
     public int bpm = Constant.INITIAL_BPM;
     private int octave = Constant.INITIAL_OCTAVE;
     private int volume = Constant.INITIAL_VOLUME;
@@ -51,6 +51,9 @@ public class MusicGenerator {
             else if (musicalEvent == Constant.CODE_TO_CHANGE_VOLUME)
                 setVolume();
 
+            else if (musicalEvent == Constant.CODE_INCREASED_DURATION)
+                increasedDurationOfNote();
+
             else if (Instruments.isInstrument(musicalEvent))
                 handleInstrumentCase(musicalEvent);
 
@@ -60,6 +63,9 @@ public class MusicGenerator {
         return this.sequence;
     }
 
+    private void increasedDurationOfNote(){
+        updateTick();
+    }
 
     private void handleNoteCase(int musicalEvent) throws InvalidMidiDataException {
         setNote(musicalEvent);
@@ -176,5 +182,4 @@ public class MusicGenerator {
     public int getBPM(){
         return this.bpm;
     }
-
 }

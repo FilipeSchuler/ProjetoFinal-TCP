@@ -48,5 +48,4 @@ public enum MusicalNote {
         }
         return isNote;
     }
-
 }
