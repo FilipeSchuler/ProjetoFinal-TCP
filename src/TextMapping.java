@@ -8,9 +8,7 @@
 
 public class TextMapping {
 
-    public static String inputText = Interface.musica;
-
-    public static int[] handleInputText(){
+        public static int[] handleInputText(String inputText){
         char[] musicToDecode = inputText.toCharArray();
         int[] decodedMusic = new int[musicToDecode.length];
         char charToDecode;

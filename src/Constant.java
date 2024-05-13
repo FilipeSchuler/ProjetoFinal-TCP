@@ -13,7 +13,7 @@ public class Constant {
 
     //VALORES INICIAIS
     public static final int INITIAL_TICK = 1;
-    public static final int INITIAL_VOLUME = 50;
+    public static final int INITIAL_VOLUME = 20;
     public static final int INITIAL_OCTAVE = 0;
     public static final int INITIAL_BPM = 90;
 

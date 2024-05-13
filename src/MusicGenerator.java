@@ -21,7 +21,7 @@ public class MusicGenerator {
     private int note;
     private int lastNote;
     private int instrument = Instruments.DEFAULT_INSTRUMENT.getMidiValue();
-    public int bpm = Interface.bpm;
+    public int bpm;
     private int octave = Constant.INITIAL_OCTAVE;
     private int volume = Constant.INITIAL_VOLUME;
 
@@ -30,10 +30,11 @@ public class MusicGenerator {
         track = sequence.createTrack();
     }
 
-    public Sequence generateMusic() throws InvalidMidiDataException {
+    public Sequence generateMusic(String musica, int bpm) throws InvalidMidiDataException {
         int[] decodedMusic;
 
-        decodedMusic = TextMapping.handleInputText();
+        setBpm(bpm);
+        decodedMusic = TextMapping.handleInputText(musica);
 
         return musicTrack(decodedMusic);
     }
@@ -181,5 +182,8 @@ public class MusicGenerator {
 
     public int getBPM(){
         return this.bpm;
+    }
+    public void setBpm(int bpm){
+        this.bpm = bpm;
     }
 }

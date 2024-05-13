@@ -5,7 +5,7 @@
 
 public class NoteUtils {
 
-    public static int changeVolume(int volume){
+    public static int changeVolume(int volume) {
         int newVolume = volume * Constant.TWO;
 
         if (isVolumeValid(newVolume))
