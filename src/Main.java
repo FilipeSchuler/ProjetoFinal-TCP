@@ -8,28 +8,10 @@ public class Main {
     private static Sequencer sequencer;
 
 
-    public static void main(String[] args) throws InvalidMidiDataException, MidiUnavailableException {
-        //Rodar a interface
+    public static void main(String[] args) {
 
         Interface PlayerGUI = new Interface();
         PlayerGUI.Player.setVisible(true);
-
-/*
-        MusicGenerator musicGenerator = new MusicGenerator();
-
-        sequencer = MidiSystem.getSequencer();
-        sequencer.open();
-        sequencer.setSequence(musicGenerator.generateMusic());
-
-        sequencer.setTempoInBPM(musicGenerator.getBPM());
-        sequencer.start();
-
-        sequencer.addMetaEventListener(meta -> {
-            if (meta.getType() == Constant.END_OF_SEQUENCE) { // Verifica se a mensagem meta é o fim da sequência
-                sequencer.close();
-            }
-        });
-*/
 
     }
 }
