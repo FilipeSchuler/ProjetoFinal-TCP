@@ -15,17 +15,17 @@ public enum Instruments {
 
     private final int midiValue;
 
-    public static int currentInstrument = DEFAULT_INSTRUMENT.getMidiValue();
+    public static int currentInstrument = DEFAULT_INSTRUMENT.GetMidiValue();
 
     Instruments(int midiValue) {
         this.midiValue = midiValue;
     }
 
-    public int getMidiValue() {
+    public int GetMidiValue() {
         return midiValue;
     }
 
-    public static int getMidiValueWithOffset(char character) {
+    public static int GetMidiValueWithOffset(char character) {
         int midiValue;
         int digitValue = Character.getNumericValue(character);
 
@@ -34,7 +34,7 @@ public enum Instruments {
         if (isValidInstrument(midiValue))
             return midiValue;
         else
-            return DEFAULT_INSTRUMENT.getMidiValue();
+            return DEFAULT_INSTRUMENT.GetMidiValue();
     }
 
     private static boolean isValidInstrument(int midiValue) {
@@ -43,7 +43,7 @@ public enum Instruments {
 
     public static boolean isInstrument(int instrument){
 
-        return instrument > DEFAULT_INSTRUMENT.getMidiValue();
+        return instrument > DEFAULT_INSTRUMENT.GetMidiValue();
     }
 
     public static boolean isInstrument(char noteChar){

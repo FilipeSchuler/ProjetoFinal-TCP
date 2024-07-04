@@ -8,32 +8,30 @@
 
 public class TextMapping {
 
-        public static int[] handleInputText(String inputText){
+    public static int[] HandleInputText(String inputText){
         char[] musicToDecode = inputText.toCharArray();
         int[] decodedMusic = new int[musicToDecode.length];
         char charToDecode;
 
-        //musica codificada =    [A, ,M,e,n,s,..., !          /* os dois vetores devem ter
-        //musica descodificada = [69(La), , , , , ..., 114  */ o mesmo tamanho
-
         for(int i = 0; i < musicToDecode.length; i++){
             charToDecode = musicToDecode[i];
+
             if(MusicalNote.isNote(charToDecode)){
-                decodedMusic[i] = convertCharIntoNote(charToDecode);
+                decodedMusic[i] = ConvertCharIntoNote(charToDecode);
             }
             else if (Instruments.isInstrument(charToDecode)){
-                Instruments.currentInstrument = convertCharIntoInstrument(charToDecode);
+                Instruments.currentInstrument = ConvertCharIntoInstrument(charToDecode);
                 decodedMusic[i] = Instruments.currentInstrument;
             }
             else{
-                decodedMusic[i] = convertCharIntoInstruction(charToDecode);
+                decodedMusic[i] = ConvertCharIntoInstruction(charToDecode);
             }
         }
 
         return decodedMusic;
     }
 
-    public static int convertCharIntoInstruction(char character){
+    public static int ConvertCharIntoInstruction(char character){
         int instructionCode;
 
         switch(character){
@@ -49,35 +47,34 @@ public class TextMapping {
         return instructionCode;
     }
 
-    public static int convertCharIntoInstrument(char character){
+    public static int ConvertCharIntoInstrument(char character){
         int instrumentMidiValue;
 
         switch (Character.toUpperCase(character)) {
-            case '!' -> instrumentMidiValue = Instruments.AGOGO.getMidiValue();
-            case 'I', 'O', 'U' -> instrumentMidiValue = Instruments.HARPSICHORD.getMidiValue();
-            case '\n' -> instrumentMidiValue = Instruments.TUBULAR_BELLS.getMidiValue();
-            case ';' -> instrumentMidiValue = Instruments.PAN_FLUTE.getMidiValue();
-            case ',' -> instrumentMidiValue = Instruments.CHURCH_ORGAN.getMidiValue();
+            case '!' -> instrumentMidiValue = Instruments.AGOGO.GetMidiValue();
+            case 'I', 'O', 'U' -> instrumentMidiValue = Instruments.HARPSICHORD.GetMidiValue();
+            case '\n' -> instrumentMidiValue = Instruments.TUBULAR_BELLS.GetMidiValue();
+            case ';' -> instrumentMidiValue = Instruments.PAN_FLUTE.GetMidiValue();
+            case ',' -> instrumentMidiValue = Instruments.CHURCH_ORGAN.GetMidiValue();
             case '0','1','2','3','4',
-                 '5','6','7','8','9' -> instrumentMidiValue = Instruments.getMidiValueWithOffset(character);
-            default -> instrumentMidiValue = Instruments.INVALID_INSTRUMENT.getMidiValue();
+                 '5','6','7','8','9' -> instrumentMidiValue = Instruments.GetMidiValueWithOffset(character);
+            default -> instrumentMidiValue = Instruments.INVALID_INSTRUMENT.GetMidiValue();
         }
         return instrumentMidiValue;
     }
 
-
-    public static int convertCharIntoNote(char character){
+    public static int ConvertCharIntoNote(char character){
         int noteMidiValue;
 
         switch (character) {
-            case 'A' -> noteMidiValue = MusicalNote.LA.getMidiValue();
-            case 'B' -> noteMidiValue = MusicalNote.SI.getMidiValue();
-            case 'C' -> noteMidiValue = MusicalNote.DO.getMidiValue();
-            case 'D' -> noteMidiValue = MusicalNote.RE.getMidiValue();
-            case 'E' -> noteMidiValue = MusicalNote.MI.getMidiValue();
-            case 'F' -> noteMidiValue = MusicalNote.FA.getMidiValue();
-            case 'G' -> noteMidiValue = MusicalNote.SOL.getMidiValue();
-            default -> noteMidiValue = MusicalNote.INVALID_NOTE.getMidiValue();
+            case 'A' -> noteMidiValue = MusicalNote.LA.GetMidiValue();
+            case 'B' -> noteMidiValue = MusicalNote.SI.GetMidiValue();
+            case 'C' -> noteMidiValue = MusicalNote.DO.GetMidiValue();
+            case 'D' -> noteMidiValue = MusicalNote.RE.GetMidiValue();
+            case 'E' -> noteMidiValue = MusicalNote.MI.GetMidiValue();
+            case 'F' -> noteMidiValue = MusicalNote.FA.GetMidiValue();
+            case 'G' -> noteMidiValue = MusicalNote.SOL.GetMidiValue();
+            default -> noteMidiValue = MusicalNote.INVALID_NOTE.GetMidiValue();
         }
         return noteMidiValue;
     }

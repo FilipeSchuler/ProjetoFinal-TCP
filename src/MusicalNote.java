@@ -20,13 +20,13 @@ public enum MusicalNote {
         this.midiValue = midiValue;
     }
 
-    public int getMidiValue() {
+    public int GetMidiValue() {
         return this.midiValue;
     }
 
-    public static MusicalNote getNoteFromMidiValue(int midiValue) {
+    public static MusicalNote GetNoteFromMidiValue(int midiValue) {
         for (MusicalNote note : MusicalNote.values()) {
-            if (note.getMidiValue() == midiValue) {
+            if (note.GetMidiValue() == midiValue) {
                 return note;
             }
         }
@@ -34,7 +34,7 @@ public enum MusicalNote {
     }
 
     public static boolean isNote(int command){
-        MusicalNote note = getNoteFromMidiValue(command);
+        MusicalNote note = GetNoteFromMidiValue(command);
 
         return note != MusicalNote.INVALID_NOTE;
     }

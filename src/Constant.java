@@ -3,19 +3,10 @@
 */
 
 public class Constant {
-
-    //SIMULAÇÕES DE ENTRADAS DE TEXTO
-    public static final String MSG1 = "A.E>.A.E>.B.E>.B.E>CE>CE>DE>DE.BA.E.AA.E.AB.E.BB.E.B.CECCECDEDDE.BA.E.AA.E." +
-                                        "AB.E.BB.E.B.CECCECDEDDE.B.EEEEEE";
-
-    public static final String MSG2 = ".FAFE>>>FAED>>>DFDC>DAGDAGFDE>>FGFE>>>EGEC>CEC";
-    public static final String MSG3 = ";.C!FBGA.";
-
     //VALORES INICIAIS
     public static final int INITIAL_TICK = 1;
     public static final int INITIAL_VOLUME = 20;
     public static final int INITIAL_OCTAVE = 0;
-    public static final int INITIAL_BPM = 90;
 
     //ALGUNS PARAMETROS PARA O JAVA SOUND
     public static final int NUM_PULSES_PER_QUARTER = 3;

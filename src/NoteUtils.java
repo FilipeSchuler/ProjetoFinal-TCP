@@ -5,7 +5,7 @@
 
 public class NoteUtils {
 
-    public static int changeVolume(int volume) {
+    public static int ChangeVolume(int volume) {
         int newVolume = volume * Constant.TWO;
 
         if (isVolumeValid(newVolume))
@@ -18,7 +18,7 @@ public class NoteUtils {
         return volume >= Constant.MIN_VOLUME && volume <= Constant.MAX_VOLUME;
     }
 
-    public static int changeOctave(int octave){
+    public static int ChangeOctave(int octave){
         int newOctave = octave + Constant.OFFSET_OCTAVE;
 
         if (isOctaveValid(newOctave))

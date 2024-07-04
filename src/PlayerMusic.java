@@ -1,39 +1,39 @@
 
 import javax.sound.midi.*;
 import javax.swing.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class PlayerMusic {
-    private static boolean IsPlaying = false;
+    private static boolean isPlaying = false;
 
     private static Sequencer sequencer;
-    private static MusicGenerator musicGenerator;
-    private static Sequence sequence;
 
     private static long currentTick = 0;
 
     public static void PlayMusic() throws InvalidMidiDataException, MidiUnavailableException {
-        if (!IsPlaying) {
+        AddVolumeListener();
+        if (!isPlaying) {
+            sequencer.setTickPosition(currentTick);
             sequencer.start();
-            IsPlaying = true;
-            VolumeListener();
+            isPlaying = true;
+
+
 
             AddEndListener();
         }
     }
 
     public static void PauseMusic() throws MidiUnavailableException {
-        if (IsPlaying) {
+        if (isPlaying) {
             sequencer.stop();
             currentTick = sequencer.getTickPosition();
-            IsPlaying = false;
+            isPlaying = false;
         }
     }
 
     public static void StopMusic() throws MidiUnavailableException {
         sequencer.close();
         currentTick = 0;
-        IsPlaying = false;
+        isPlaying = false;
     }
 
     public static int GetBpmFromText(JTextField bpmText) {
@@ -41,41 +41,39 @@ public class PlayerMusic {
         try {
             bpm = Integer.parseInt(bpmText.getText());
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(null, "Digite um valor inteiro válido de BPM!");
+            Interface.ShowBpmWarning();
         }
         return bpm;
     }
 
-    public static void GenerateSequence(String musica, int bpm) throws InvalidMidiDataException, MidiUnavailableException {
-
-        musicGenerator = new MusicGenerator();
+    public static void HandleMusicParameters(String music, int bpm) throws InvalidMidiDataException, MidiUnavailableException {
         sequencer = MidiSystem.getSequencer();
-        sequencer.open();
-        sequence = musicGenerator.generateMusic(musica, bpm);
-        sequencer.setSequence(sequence);
-        sequencer.setTempoInBPM(musicGenerator.getBPM());
-        sequencer.setTickPosition(currentTick);
 
+        if (sequencer.getSequence() == null){
+            MusicGenerator musicGenerator = new MusicGenerator();
+            sequencer.open();
+            Sequence sequence = musicGenerator.GenerateMusic(music, bpm);
+            sequencer.setSequence(sequence);
+            sequencer.setTempoInBPM(musicGenerator.GetBPM());
+        }
     }
 
     public static void AddEndListener() {
         sequencer.addMetaEventListener(meta -> {
             if (meta.getType() == Constant.END_OF_SEQUENCE) { // Verifica se a mensagem meta é o fim da sequência
                 sequencer.close();
+                isPlaying = false;
                 currentTick = 0;
-                IsPlaying = false;
+                Interface.UpdateVolumeBar(Constant.INITIAL_VOLUME);
             }
         });
     }
 
-
-    public static void VolumeListener() throws MidiUnavailableException {
+    public static void AddVolumeListener() throws MidiUnavailableException {
         sequencer.getTransmitter().setReceiver(new Receiver() {
             public void send(MidiMessage message, long timeStamp) {
-                if (message instanceof ShortMessage) {
-                    ShortMessage sm = (ShortMessage) message;
-                    System.out.println("Dado2 = " + sm.getData2());
-                    if(sm.getData2() != 0)
+                if (message instanceof ShortMessage sm) {
+                    if(sm.getCommand() == Constant.NOTE_ON)
                         Interface.UpdateVolumeBar(sm.getData2());
                 }
             }
@@ -83,20 +81,5 @@ public class PlayerMusic {
             @Override
             public void close() {}
         });
-
-
-
-
-      /*  Track[] tracks = sequence.getTracks();
-        Track currentTrack = tracks[0];
-        for (int j = 0; j < currentTrack.size(); j++) {
-            MidiEvent event = currentTrack.get(j);
-            MidiMessage message = event.getMessage();
-            if (message instanceof ShortMessage) {
-                ShortMessage sm = (ShortMessage) message;
-                Interface.UpdateVolumeBar(sm.getData2());
-            }
-        }
-*/
     }
 }
